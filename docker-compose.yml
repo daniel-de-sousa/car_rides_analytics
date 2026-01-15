@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:18.1-alpine
+    container_name: uber_ola_trips
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: cars_trips
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: UTC
+    volumes:
+      - postgres_db:/var/lib/postgresql
+
+volumes:
+  postgres_db:
