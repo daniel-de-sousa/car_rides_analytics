@@ -1,0 +1,96 @@
+-- ============================================================================
+-- SILVER LAYER: TABELA ROAD_TRIPS
+-- Camada Silver - Dados limpos e validados de viagens (Uber & Ola)
+-- ============================================================================
+
+-- Criação de schema silver (caso não exista)
+CREATE SCHEMA IF NOT EXISTS silver;
+
+-- Comentário no schema
+COMMENT ON SCHEMA silver IS 'Camada Silver - Dados limpos e validados';
+
+-- ============================================================================
+-- TABELA: ROAD_TRIPS
+-- ============================================================================
+DROP TABLE IF EXISTS silver.road_trips CASCADE;
+
+CREATE TABLE silver.road_trips (
+    id BIGINT PRIMARY KEY,
+    
+    date DATE,
+    time TIME,
+    
+    booking_status VARCHAR,
+    customer_id VARCHAR,
+    vehicle_type VARCHAR,
+    
+    pickup_location VARCHAR,
+    drop_location VARCHAR,
+    
+    driver_time_accept INTEGER,
+    passenger_time_boarding INTEGER,
+    
+    canceled_by_customer TEXT,
+    canceled_by_driver TEXT,
+    
+    incomplete_rides BOOLEAN,
+    incomplete_rides_reason TEXT,
+    
+    booking_value NUMERIC(10,2),
+    payment_method VARCHAR,
+    ride_distance INTEGER,
+    
+    driver_ratings NUMERIC(3,2),
+    customer_rating NUMERIC(3,2),
+    
+    -- Metadata
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- ============================================================================
+-- ÍNDICES PARA PERFORMANCE
+-- ============================================================================
+CREATE INDEX idx_road_trips_date ON silver.road_trips(date);
+CREATE INDEX idx_road_trips_booking_status ON silver.road_trips(booking_status);
+CREATE INDEX idx_road_trips_vehicle_type ON silver.road_trips(vehicle_type);
+CREATE INDEX idx_road_trips_pickup_location ON silver.road_trips(pickup_location);
+CREATE INDEX idx_road_trips_drop_location ON silver.road_trips(drop_location);
+CREATE INDEX idx_road_trips_payment_method ON silver.road_trips(payment_method);
+
+CREATE INDEX idx_road_trips_cancelled_customer 
+ON silver.road_trips(canceled_by_customer)
+WHERE canceled_by_customer IS NOT NULL;
+
+CREATE INDEX idx_road_trips_cancelled_driver 
+ON silver.road_trips(canceled_by_driver)
+WHERE canceled_by_driver IS NOT NULL;
+
+-- ============================================================================
+-- COMENTÁRIOS NA TABELA E COLUNAS
+-- ============================================================================
+COMMENT ON TABLE silver.road_trips IS 'Viagens registradas com dados limpos, validados e prontos para análise';
+
+COMMENT ON COLUMN silver.road_trips.id IS 'Identificador único da viagem (gerado no banco)';
+COMMENT ON COLUMN silver.road_trips.date IS 'Data da solicitação da viagem';
+COMMENT ON COLUMN silver.road_trips.time IS 'Hora da solicitação da viagem';
+COMMENT ON COLUMN silver.road_trips.booking_status IS 'Status final da reserva';
+COMMENT ON COLUMN silver.road_trips.customer_id IS 'Identificador anonimizado do cliente';
+COMMENT ON COLUMN silver.road_trips.vehicle_type IS 'Categoria do veículo solicitado';
+COMMENT ON COLUMN silver.road_trips.pickup_location IS 'Local de embarque';
+COMMENT ON COLUMN silver.road_trips.drop_location IS 'Local de destino';
+COMMENT ON COLUMN silver.road_trips.driver_time_accept IS 'Tempo (em segundos) até o motorista aceitar a corrida';
+COMMENT ON COLUMN silver.road_trips.passenger_time_boarding IS 'Tempo (em segundos) até o embarque do passageiro';
+COMMENT ON COLUMN silver.road_trips.canceled_by_customer IS 'Motivo do cancelamento informado pelo cliente';
+COMMENT ON COLUMN silver.road_trips.canceled_by_driver IS 'Motivo do cancelamento informado pelo motorista';
+COMMENT ON COLUMN silver.road_trips.incomplete_rides IS 'Indica se a viagem foi iniciada mas não concluída';
+COMMENT ON COLUMN silver.road_trips.incomplete_rides_reason IS 'Motivo da não conclusão da viagem';
+COMMENT ON COLUMN silver.road_trips.booking_value IS 'Valor cobrado pela viagem';
+COMMENT ON COLUMN silver.road_trips.payment_method IS 'Forma de pagamento utilizada';
+COMMENT ON COLUMN silver.road_trips.ride_distance IS 'Distância estimada da viagem';
+COMMENT ON COLUMN silver.road_trips.driver_ratings IS 'Avaliação média histórica do motorista';
+COMMENT ON COLUMN silver.road_trips.customer_rating IS 'Avaliação média histórica do cliente';
+COMMENT ON COLUMN silver.road_trips.created_at IS 'Timestamp de criação do registro';
+
+-- ============================================================================
+-- FIM DO DDL
+-- ============================================================================
