@@ -41,10 +41,7 @@ CREATE TABLE silver.road_trips (
     ride_distance INTEGER,
     
     driver_ratings NUMERIC(3,2),
-    customer_rating NUMERIC(3,2),
-    
-    -- Metadata
-    created_at TIMESTAMP DEFAULT NOW()
+    customer_rating NUMERIC(3,2)
 );
 
 -- ============================================================================
