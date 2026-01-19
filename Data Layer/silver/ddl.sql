@@ -86,7 +86,6 @@ COMMENT ON COLUMN silver.road_trips.payment_method IS 'Forma de pagamento utiliz
 COMMENT ON COLUMN silver.road_trips.ride_distance IS 'Distância estimada da viagem';
 COMMENT ON COLUMN silver.road_trips.driver_ratings IS 'Avaliação média histórica do motorista';
 COMMENT ON COLUMN silver.road_trips.customer_rating IS 'Avaliação média histórica do cliente';
-COMMENT ON COLUMN silver.road_trips.created_at IS 'Timestamp de criação do registro';
 
 -- ============================================================================
 -- FIM DO DDL
