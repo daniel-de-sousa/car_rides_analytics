@@ -17,7 +17,7 @@ WITH rotas_sucesso AS (
         COUNT(*) AS total_viagens,
         AVG(f.bkg_val) AS valor_medio,
         AVG(f.rid_dst) AS distancia_media
-    FROM dw.car_trp f
+    FROM dw.fac_trp f
     INNER JOIN dw.dim_rot r ON f.rot_srk = r.rot_key
     INNER JOIN dw.dim_sts s ON f.sts_srk = s.sts_key
     WHERE s.bkg_sts = 'Success'
@@ -51,7 +51,7 @@ WITH motoristas_por_rating AS (
         COUNT(CASE WHEN s.bkg_sts = 'Success' THEN 1 END) AS corridas_concluidas,
         AVG(f.bkg_val) AS valor_medio,
         AVG(f.drv_tim_acp) AS tempo_medio_aceitacao
-    FROM dw.car_trp f
+    FROM dw.fac_trp f
     INNER JOIN dw.dim_sts s ON f.sts_srk = s.sts_key
     WHERE f.drv_rtg IS NOT NULL
     GROUP BY 
@@ -94,7 +94,7 @@ WITH performance_veiculo_pagamento AS (
         SUM(f.bkg_val) AS receita_total,
         AVG(f.bkg_val) AS ticket_medio,
         AVG(f.drv_rtg) AS avaliacao_media_motorista
-    FROM dw.car_trp f
+    FROM dw.fac_trp f
     INNER JOIN dw.dim_vec v ON f.vec_srk = v.vec_key
     INNER JOIN dw.dim_pay p ON f.pay_srk = p.pay_key
     INNER JOIN dw.dim_sts s ON f.sts_srk = s.sts_key
@@ -126,7 +126,7 @@ WITH demanda_horaria AS (
         COUNT(CASE WHEN s.bkg_sts = 'Success' THEN 1 END) AS viagens_concluidas,
         AVG(f.bkg_val) AS valor_medio,
         AVG(f.drv_tim_acp) AS tempo_medio_aceitacao
-    FROM dw.car_trp f
+    FROM dw.fac_trp f
     INNER JOIN dw.dim_tim t ON f.tim_srk = t.tim_key
     INNER JOIN dw.dim_sts s ON f.sts_srk = s.sts_key
     GROUP BY EXTRACT(HOUR FROM t.tim), s.bkg_sts
@@ -160,7 +160,7 @@ WITH analise_pagamento AS (
         AVG(f.bkg_val) AS ticket_medio,
         AVG(f.rid_dst) AS distancia_media,
         COUNT(CASE WHEN s.bkg_sts = 'Success' THEN 1 END) AS transacoes_sucesso
-    FROM dw.car_trp f
+    FROM dw.fac_trp f
     INNER JOIN dw.dim_pay p ON f.pay_srk = p.pay_key
     INNER JOIN dw.dim_tim t ON f.tim_srk = t.tim_key
     INNER JOIN dw.dim_vec v ON f.vec_srk = v.vec_key
@@ -223,7 +223,7 @@ WITH metricas_veiculo AS (
         AVG(f.drv_tim_acp) AS tempo_medio_aceitacao,
         AVG(f.psg_tim_bdg) AS tempo_medio_embarque,
         AVG(f.bkg_val) AS valor_medio
-    FROM dw.car_trp f
+    FROM dw.fac_trp f
     INNER JOIN dw.dim_vec v ON f.vec_srk = v.vec_key
     INNER JOIN dw.dim_sts s ON f.sts_srk = s.sts_key
     GROUP BY v.vec_typ
@@ -257,7 +257,7 @@ WITH viagens_incompletas AS (
         COUNT(*) AS total_casos,
         AVG(f.rid_dst) AS distancia_media,
         AVG(f.bkg_val) AS valor_medio_perdido
-    FROM dw.car_trp f
+    FROM dw.fac_trp f
     INNER JOIN dw.dim_sts s ON f.sts_srk = s.sts_key
     INNER JOIN dw.dim_vec v ON f.vec_srk = v.vec_key
     INNER JOIN dw.dim_rot r ON f.rot_srk = r.rot_key
@@ -299,7 +299,7 @@ WITH performance_semanal AS (
         SUM(CASE WHEN s.bkg_sts = 'Success' THEN f.bkg_val ELSE 0 END) AS receita_total,
         AVG(f.drv_rtg) AS avaliacao_media_motorista,
         AVG(f.rid_dst) AS distancia_media
-    FROM dw.car_trp f
+    FROM dw.fac_trp f
     INNER JOIN dw.dim_tim t ON f.tim_srk = t.tim_key
     INNER JOIN dw.dim_sts s ON f.sts_srk = s.sts_key
     GROUP BY EXTRACT(DOW FROM t.dat)
@@ -331,7 +331,7 @@ WITH metricas_correlacao AS (
         f.drv_tim_acp,
         f.psg_tim_bdg,
         (f.drv_tim_acp + f.psg_tim_bdg) AS tempo_total_espera
-    FROM dw.car_trp f
+    FROM dw.fac_trp f
     INNER JOIN dw.dim_vec v ON f.vec_srk = v.vec_key
     INNER JOIN dw.dim_sts s ON f.sts_srk = s.sts_key
     WHERE s.bkg_sts = 'Success'
@@ -382,7 +382,7 @@ WITH metricas_rotas AS (
         AVG(CASE WHEN s.bkg_sts = 'Success' THEN f.rid_dst END) AS distancia_media,
         AVG(CASE WHEN s.bkg_sts = 'Success' THEN f.drv_tim_acp END) AS tempo_aceitacao,
         AVG(CASE WHEN s.bkg_sts = 'Success' THEN f.drv_rtg END) AS rating_medio
-    FROM dw.car_trp f
+    FROM dw.fac_trp f
     INNER JOIN dw.dim_rot r ON f.rot_srk = r.rot_key
     INNER JOIN dw.dim_sts s ON f.sts_srk = s.sts_key
     GROUP BY r.pck_loc, r.drp_loc
